@@ -21,17 +21,19 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForce->SetupAttachment(StaticMesh);
 }
 
-// Called when the game starts or when spawned
-void ASExplosiveBarrel::BeginPlay()
+void ASExplosiveBarrel::PostInitializeComponents()
 {
-	Super::BeginPlay();
-	
+	Super::PostInitializeComponents();
+
+	StaticMesh->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::OnActorHit);
 }
 
-// Called every frame
-void ASExplosiveBarrel::Tick(float DeltaTime)
+void ASExplosiveBarrel::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)
 {
-	Super::Tick(DeltaTime);
-
+	Explode();
 }
 
+void ASExplosiveBarrel::Explode()
+{
+	RadialForce->FireImpulse();
+}
