@@ -6,11 +6,21 @@
 #include "SBaseProjectile.h"
 #include "SMagicProjectile.generated.h"
 
+class UParticleSystem;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASMagicProjectile : public ASBaseProjectile
 {
 	GENERATED_BODY()
+
+protected:
+	UPROPERTY(EditAnywhere)
+	UParticleSystem* HitEffect;
 	
-public:	
-	ASMagicProjectile();
+	virtual void BeginPlay() override;
+
+	virtual void PostInitializeComponents() override;
+
+	UFUNCTION()
+	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult);
 };
