@@ -5,40 +5,41 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 void ASDashProjectile::BeginPlay()
 {
 	Super::BeginPlay();
 
+	MovementComp->InitialSpeed = 6000.f;
+	
 	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
 
 	GetWorldTimerManager().SetTimer(TimerHandle_Explode, this, &ASDashProjectile::Explode, ExplodeDelay);
 }
 
-void ASDashProjectile::PostInitializeComponents()
+void ASDashProjectile::Explode_Implementation()
 {
-	Super::PostInitializeComponents();
+	GetWorldTimerManager().ClearTimer(TimerHandle_Explode);
+	
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactEffect, GetActorLocation(), GetActorRotation());
 
-	SphereComp->OnComponentHit.AddDynamic(this, &ASDashProjectile::OnActorHit);
-}
-
-void ASDashProjectile::Explode()
-{
+	EffectComp->DeactivateSystem();
+	
 	MovementComp->StopMovementImmediately();
+	SetActorEnableCollision(false);
 	
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplodeEffect, GetActorLocation(), GetActorRotation());
-	
-	GetWorldTimerManager().SetTimer(TimerHandle_Teleport, this, &ASDashProjectile::Teleport, TeleportDelay);
+	FTimerHandle TimerHandle_Teleport;
+	GetWorldTimerManager().SetTimer(TimerHandle_Teleport, this, &ASDashProjectile::TeleportInstigator, TeleportDelay);
 }
 
-void ASDashProjectile::Teleport()
+void ASDashProjectile::TeleportInstigator()
 {
-	GetInstigator()->TeleportTo(GetActorLocation(), GetActorRotation());
+	AActor* ActorToTeleport = GetInstigator();
+	if (ensure(ActorToTeleport))
+	{
+		GetInstigator()->TeleportTo(GetActorLocation(), ActorToTeleport->GetActorRotation());
+	}
+
 	Destroy();
 }
-
-void ASDashProjectile::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)
-{
-	Explode();
-}
-

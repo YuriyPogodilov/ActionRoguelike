@@ -3,13 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "SBaseProjectile.h"
+#include "SProjectileBase.h"
 #include "SDashProjectile.generated.h"
 
-class UParticleSystem;
-
 UCLASS()
-class ACTIONROGUELIKE_API ASDashProjectile : public ASBaseProjectile
+class ACTIONROGUELIKE_API ASDashProjectile : public ASProjectileBase
 {
 	GENERATED_BODY()
 
@@ -20,21 +18,11 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Dash")
 	float TeleportDelay = 0.2f;
 
-	UPROPERTY(EditAnywhere, Category = "Dash")
-	UParticleSystem* ExplodeEffect;
-
 	FTimerHandle TimerHandle_Explode;
-	FTimerHandle TimerHandle_Teleport;
 
-protected:
 	virtual void BeginPlay() override;
 
-	virtual void PostInitializeComponents() override;
+	virtual void Explode_Implementation() override;
 
-	void Explode();
-
-	void Teleport();
-
-	UFUNCTION()
-	void OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult);
+	void TeleportInstigator();
 };
