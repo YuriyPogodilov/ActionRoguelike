@@ -19,6 +19,8 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 public:
 	ASCharacter();
 
+	virtual void PostInitializeComponents() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
@@ -75,11 +77,11 @@ protected:
 
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
+	UFUNCTION()
+	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
 public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };
