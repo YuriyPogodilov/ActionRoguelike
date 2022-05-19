@@ -12,6 +12,27 @@ class ACTIONROGUELIKE_API ASPickableActorBase : public AActor, public ISGameplay
 {
 	GENERATED_BODY()
 	
-public:	
+public:
 	ASPickableActorBase();
+
+	void Activate();
+
+	void Deactivate();
+
+protected:
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	bool ApplyEffect(APawn* InstigatorPawn);
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UStaticMeshComponent* MeshBase;
+
+	FTimerHandle CooldownTimer;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsActive = true;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float CooldownTime = 10.0f;
 };
