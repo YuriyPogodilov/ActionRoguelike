@@ -33,6 +33,8 @@ ASCharacter::ASCharacter()
 	bUseControllerRotationYaw = false;
 
 	SpellCastEffect = nullptr;
+
+	HandSocketName = "Muzzle_01";
 }
 
 void ASCharacter::PostInitializeComponents()
@@ -108,10 +110,15 @@ void ASCharacter::MoveRight(float Value)
 	AddMovementInput(RightVector, Value);
 }
 
-void ASCharacter::PrimaryAttack()
+void ASCharacter::StartAttackEffect()
 {
 	PlayAnimMontage(AttackAnim);
+	UGameplayStatics::SpawnEmitterAttached(SpellCastEffect, GetMesh(), HandSocketName);
+}
 
+void ASCharacter::PrimaryAttack()
+{
+	StartAttackEffect();
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_TimeElapsed, 0.2f);
 }
 
@@ -122,8 +129,7 @@ void ASCharacter::PrimaryAttack_TimeElapsed()
 
 void ASCharacter::SecondaryAttack()
 {
-	PlayAnimMontage(AttackAnim);
-
+	StartAttackEffect();
 	GetWorldTimerManager().SetTimer(TimerHandle_BlackHoleAttack, this, &ASCharacter::SecondaryAttack_TimeElapsed, 0.2f);
 }
 
@@ -156,7 +162,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 		return;
 	}
 
-	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	FVector HandLocation = GetMesh()->GetSocketLocation(HandSocketName);
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -187,8 +193,6 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
 	FTransform SpawnTM = FTransform(ProjectileRotation, HandLocation);
 
 	GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
-
-	UGameplayStatics::SpawnEmitterAttached(SpellCastEffect, GetMesh(), "Muzzle_01");
 }
 
 void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)

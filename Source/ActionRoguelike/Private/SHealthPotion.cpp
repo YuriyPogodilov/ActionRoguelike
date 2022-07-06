@@ -7,9 +7,14 @@
 
 bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
+	if (!ensure(InstigatorPawn))
+	{
+		return false;
+	}
+
 	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
 
-	if (IsValid(AttributeComp))
+	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{
 		return AttributeComp->ApplyHealthChange(HealthRestoreAmount);
 	}

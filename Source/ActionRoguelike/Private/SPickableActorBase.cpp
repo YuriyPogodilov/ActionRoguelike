@@ -9,37 +9,30 @@ ASPickableActorBase::ASPickableActorBase()
 	RootComponent = MeshBase;
 }
 
-void ASPickableActorBase::Activate()
+void ASPickableActorBase::SetActive(bool bNewIsActive)
 {
-	if (bIsActive)
+	if (bIsActive == bNewIsActive)
 	{
 		return;
 	}
 
-	bIsActive = true;
-	MeshBase->SetVisibility(true, true);
-	MeshBase->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	bIsActive = bNewIsActive;
+	RootComponent->SetVisibility(bIsActive, true);
+	SetActorEnableCollision(bIsActive);
 }
 
-void ASPickableActorBase::Deactivate()
+void ASPickableActorBase::ShowUp()
 {
-	if (!bIsActive)
-	{
-		return;
-	}
-
-	bIsActive = false;
-	MeshBase->SetVisibility(false, true);
-	MeshBase->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetActive(true);
 }
 
 void ASPickableActorBase::Interact_Implementation(APawn* InstigatorPawn)
 {
 	if (ApplyEffect(InstigatorPawn))
 	{
-		Deactivate();
+		SetActive(false);
 
-		GetWorldTimerManager().SetTimer(CooldownTimer, this, &ASPickableActorBase::Activate, CooldownTime); 
+		GetWorldTimerManager().SetTimer(CooldownTimer, this, &ASPickableActorBase::ShowUp, CooldownTime); 
 	}
 	
 }

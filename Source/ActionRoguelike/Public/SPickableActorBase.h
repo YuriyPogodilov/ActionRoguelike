@@ -15,9 +15,9 @@ class ACTIONROGUELIKE_API ASPickableActorBase : public AActor, public ISGameplay
 public:
 	ASPickableActorBase();
 
-	void Activate();
+	void SetActive(bool bNewIsActive);
 
-	void Deactivate();
+	void ShowUp();
 
 protected:
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
