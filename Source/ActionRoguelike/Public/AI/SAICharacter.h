@@ -26,6 +26,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USAttributeComponent* AttributeComp;
 
+	void SetTargetActor(AActor* NewTarget);
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 

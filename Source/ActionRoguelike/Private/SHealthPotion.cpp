@@ -16,7 +16,7 @@ bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{
-		return AttributeComp->ApplyHealthChange(HealthRestoreAmount);
+		return AttributeComp->ApplyHealthChange(this, HealthRestoreAmount);
 	}
 
 	return false;
