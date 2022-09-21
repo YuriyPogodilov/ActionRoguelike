@@ -10,6 +10,11 @@ USAttributeComponent::USAttributeComponent()
 	bIsAlive = true;
 }
 
+bool USAttributeComponent::Kill(AActor* Instigator)
+{
+	return ApplyHealthChange(Instigator, -MaxHealth);
+}
+
 bool USAttributeComponent::IsAlive() const
 {
 	return bIsAlive;
