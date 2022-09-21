@@ -38,6 +38,9 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	FName HandSocketName;
 
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	FName TimeToHitParameterName;
+
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> ProjectileClass;
 

@@ -20,6 +20,10 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
+
+	UPROPERTY(VisibleAnywhere, Category = "Effect")
+	FName TimeToHitParameterName;
+	
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UPawnSensingComponent* PawnSensingComp;
 

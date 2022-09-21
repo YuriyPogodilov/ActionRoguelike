@@ -35,6 +35,8 @@ ASCharacter::ASCharacter()
 	SpellCastEffect = nullptr;
 
 	HandSocketName = "Muzzle_01";
+
+	TimeToHitParameterName = "TimeToHit";
 }
 
 void ASCharacter::PostInitializeComponents()
@@ -199,7 +201,7 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 {
 	if (Delta < 0.0f)
 	{
-		GetMesh()->SetScalarParameterValueOnMaterials("TimeToHit", GetWorld()->TimeSeconds);
+		GetMesh()->SetScalarParameterValueOnMaterials(TimeToHitParameterName, GetWorld()->TimeSeconds);
 
 		if (NewHealth <= 0.0f)
 		{
