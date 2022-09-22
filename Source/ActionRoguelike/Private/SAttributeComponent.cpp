@@ -6,13 +6,13 @@
 USAttributeComponent::USAttributeComponent()
 {
 	Health = 100.0f;
-	MaxHealth = 100.0;
+	HealthMax = 100.0;
 	bIsAlive = true;
 }
 
 bool USAttributeComponent::Kill(AActor* Instigator)
 {
-	return ApplyHealthChange(Instigator, -MaxHealth);
+	return ApplyHealthChange(Instigator, -HealthMax);
 }
 
 bool USAttributeComponent::IsAlive() const
@@ -22,7 +22,17 @@ bool USAttributeComponent::IsAlive() const
 
 bool USAttributeComponent::IsFullHealth() const
 {
-	return Health == MaxHealth;
+	return Health == HealthMax;
+}
+
+float USAttributeComponent::GetHealth() const
+{
+	return Health;
+}
+
+float USAttributeComponent::GetHealthMax() const
+{
+	return HealthMax;
 }
 
 bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
@@ -33,7 +43,7 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	}
 
 	float OldHealth = Health;
-	float NewHealth = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
+	float NewHealth = FMath::Clamp(Health + Delta, 0.0f, HealthMax);
 
 	if (NewHealth == Health)
 	{

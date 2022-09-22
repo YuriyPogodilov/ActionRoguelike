@@ -31,7 +31,7 @@ protected:
 	float Health;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Attributes")
-	float MaxHealth;
+	float HealthMax;
 
 	bool bIsAlive;
 
@@ -44,7 +44,13 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	bool IsFullHealth() const;
-	
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealth() const;
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealthMax() const;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnHealthChanged OnHealthChanged;
 	
