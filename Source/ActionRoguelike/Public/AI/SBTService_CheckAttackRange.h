@@ -14,7 +14,15 @@ class ACTIONROGUELIKE_API USBTService_CheckAttackRange : public UBTService
 {
 	GENERATED_BODY()
 
+public:
+
+	USBTService_CheckAttackRange();
+
 protected:
+
+	UPROPERTY(EditAnywhere, Category = "AI")
+	float MaxAttackRange;
+
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FBlackboardKeySelector AttackRangeKey;
 
