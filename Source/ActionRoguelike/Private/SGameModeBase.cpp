@@ -9,6 +9,7 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "EngineUtils.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning bots via timer."), ECVF_Cheat); 
@@ -17,6 +18,8 @@ static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT
 ASGameModeBase::ASGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
+	PlayerRespawnDelay = 2.0f;
+	CreditsForBotKilling = 30;
 }
 
 
@@ -114,16 +117,28 @@ void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
 
 void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 {
-	ASCharacter* Player = Cast<ASCharacter>(VictimActor);
-	if (Player)
+	ASAICharacter* Bot = Cast<ASAICharacter>(VictimActor);
+	if (Bot)
 	{
-		FTimerHandle TimerHandle_RespawnDelay;
+		ASCharacter* Player = Cast<ASCharacter>(KillerActor);
+		if (Player)
+		{
+			ASPlayerState* PlayerState = Player->GetPlayerState<ASPlayerState>();
+			PlayerState->ApplyCreditChange(Bot, CreditsForBotKilling);
+		}
+	}
+	else
+	{
+		ASCharacter* Player = Cast<ASCharacter>(VictimActor);
+		if (Player)
+		{
+			FTimerHandle TimerHandle_RespawnDelay;
 
-		FTimerDelegate Delegate;
-		Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
+			FTimerDelegate Delegate;
+			Delegate.BindUFunction(this, "RespawnPlayerElapsed", Player->GetController());
 
-		float RespawnDelay = 2.0f;
-		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+			GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, PlayerRespawnDelay, false);
+		}
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));

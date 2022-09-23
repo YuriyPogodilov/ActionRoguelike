@@ -3,10 +3,15 @@
 
 #include "SPickableActorBase.h"
 
+#include "Components/SphereComponent.h"
+
 ASPickableActorBase::ASPickableActorBase()
 {
+	SphereComp = CreateDefaultSubobject<USphereComponent>("SphereComponent");
+	RootComponent = SphereComp;
+
 	MeshBase = CreateDefaultSubobject<UStaticMeshComponent>("MeshBase");
-	RootComponent = MeshBase;
+	MeshBase->SetupAttachment(SphereComp);
 }
 
 void ASPickableActorBase::SetActive(bool bNewIsActive)

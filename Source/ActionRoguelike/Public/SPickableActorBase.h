@@ -7,6 +7,9 @@
 #include "GameFramework/Actor.h"
 #include "SPickableActorBase.generated.h"
 
+class USphereComponent;
+
+
 UCLASS(ABSTRACT)
 class ACTIONROGUELIKE_API ASPickableActorBase : public AActor, public ISGameplayInterface
 {
@@ -24,6 +27,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool ApplyEffect(APawn* InstigatorPawn);
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	USphereComponent* SphereComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UStaticMeshComponent* MeshBase;

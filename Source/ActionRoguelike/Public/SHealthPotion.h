@@ -14,9 +14,17 @@ class ACTIONROGUELIKE_API ASHealthPotion : public ASPickableActorBase
 {
 	GENERATED_BODY()
 
+public:
+
+	ASHealthPotion();
+
 protected:
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health Potion")
-	float HealthRestoreAmount = 30.0f;
-	
+	float HealthRestoreAmount;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health Potion")
+	int32 Cost;
+
 	virtual bool ApplyEffect_Implementation(APawn* InstigatorPawn) override;
 };

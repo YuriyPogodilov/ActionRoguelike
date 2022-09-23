@@ -35,6 +35,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	float SpawnTimerInterval;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Game Rules")
+	float PlayerRespawnDelay;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Game Rules")
+	int32 CreditsForBotKilling;
+
 	UFUNCTION()
 	void SpawnBotTimerElapsed();
 

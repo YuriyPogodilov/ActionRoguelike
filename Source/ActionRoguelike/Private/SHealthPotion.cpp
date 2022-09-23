@@ -4,10 +4,28 @@
 #include "SHealthPotion.h"
 
 #include "SAttributeComponent.h"
+#include "SPlayerState.h"
+
+ASHealthPotion::ASHealthPotion()
+{
+	HealthRestoreAmount = 30.0f;
+	Cost = 30.0f;
+}
 
 bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
 	if (!ensure(InstigatorPawn))
+	{
+		return false;
+	}
+
+	ASPlayerState* PlayerState = InstigatorPawn->GetPlayerState<ASPlayerState>();
+	if (!PlayerState)
+	{
+		return false;
+	}
+
+	if (!PlayerState->ApplyCreditChange(this, -Cost))
 	{
 		return false;
 	}
