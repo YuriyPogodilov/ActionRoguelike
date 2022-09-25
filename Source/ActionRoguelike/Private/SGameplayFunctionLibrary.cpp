@@ -26,8 +26,11 @@ bool USGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCauser, AAc
 		UPrimitiveComponent* HitComp = HitResult.GetComponent();
 		if (HitComp && HitComp->IsSimulatingPhysics(HitResult.BoneName))
 		{
+			// Direction = Target - Origin
+			FVector Direction = HitResult.TraceEnd - HitResult.TraceStart;
+			Direction.Normalize();
 			float DirectionalDamageForce = CVarDirectionalDamageForce.GetValueOnGameThread();
-			HitComp->AddImpulseAtLocation(-HitResult.ImpactNormal * DirectionalDamageForce, HitResult.ImpactPoint, HitResult.BoneName);
+			HitComp->AddImpulseAtLocation(Direction * DirectionalDamageForce, HitResult.ImpactPoint, HitResult.BoneName);
 		}
 		return true;
 	}
