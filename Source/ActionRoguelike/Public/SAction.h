@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/NoExportTypes.h"
 #include "SAction.generated.h"
 
 /**
@@ -21,6 +20,8 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
+
+	UWorld* GetWorld() const override;
 
 	/* Action nickname to start/stop without reference to the object */
 	UPROPERTY(EditDefaultsOnly, Category = "Action")

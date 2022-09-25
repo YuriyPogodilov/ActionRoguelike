@@ -39,33 +39,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	USActionComponent* ActionComp;
 
-	UPROPERTY(VisibleAnywhere)
-	FName HandSocketName;
-
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	FName TimeToHitParameterName;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> BlackHoleProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> DashProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UParticleSystem* SpellCastEffect;
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_BlackHoleAttack;
-	FTimerHandle TimerHandle_Dash;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	float TargetRaycastDistance = 5000.0f;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -78,23 +53,13 @@ protected:
 
 	void SprintStop();
 
-	void StartAttackEffect();
-
 	void PrimaryAttack();
 
-	void PrimaryAttack_TimeElapsed();
-
-	void SecondaryAttack();
-
-	void SecondaryAttack_TimeElapsed();
+	void BlackHoleAttack();
 
 	void Dash();
 
-	void Dash_TimeElapsed();
-
 	void PrimaryInteract();
-
-	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
