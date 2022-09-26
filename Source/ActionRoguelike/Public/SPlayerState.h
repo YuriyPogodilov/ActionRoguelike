@@ -10,7 +10,7 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_FourParams(FOnCreditChanged, AActor*, InstigatorActor, APlayerState*, Owner, int32, NewCredit, int32, Delta);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditChanged, ASPlayerState*, PlayerState, int32, NewCredit, int32, Delta);
 
 UCLASS()
 class ACTIONROGUELIKE_API ASPlayerState : public APlayerState
@@ -24,8 +24,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GetCredits() const;
 
-	UFUNCTION(BlueprintCallable)
-	bool ApplyCreditChange(AActor* InstigatorActor, int32 Delta);
+	UFUNCTION(BlueprintCallable, Category = "Credits")
+	void AddCredits(int32 Delta);
+
+	UFUNCTION(BlueprintCallable, Category = "Credits")
+	bool RemoveCredits(int32 Delta);
 
 	UPROPERTY(BlueprintAssignable)
 	FOnCreditChanged OnCreditChanged;

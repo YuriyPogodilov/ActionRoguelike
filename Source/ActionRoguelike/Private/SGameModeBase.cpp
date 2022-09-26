@@ -20,6 +20,8 @@ ASGameModeBase::ASGameModeBase()
 	SpawnTimerInterval = 2.0f;
 	PlayerRespawnDelay = 2.0f;
 	CreditsForBotKilling = 30;
+
+	PlayerStateClass = ASPlayerState::StaticClass();
 }
 
 
@@ -124,7 +126,10 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 		if (Player)
 		{
 			ASPlayerState* PlayerState = Player->GetPlayerState<ASPlayerState>();
-			PlayerState->ApplyCreditChange(Bot, CreditsForBotKilling);
+			if (PlayerState)
+			{
+				PlayerState->AddCredits(CreditsForBotKilling);
+			}
 		}
 	}
 	else

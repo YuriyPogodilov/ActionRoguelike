@@ -16,22 +16,39 @@ int32 ASPlayerState::GetCredits() const
 	return Credits;
 }
 
-
-bool ASPlayerState::ApplyCreditChange(AActor* InstigatorActor, int32 Delta)
+void ASPlayerState::AddCredits(int32 Delta)
 {
-	int32 OldCredits = Credits;
-	int32 NewCredits = OldCredits + Delta;
+	if (!ensure(Delta > 0.0f))
+	{
+		return;
+	}
 
-	if (NewCredits < 0)
+	Credits += Delta;
+
+	if (OnCreditChanged.IsBound())
+	{
+		OnCreditChanged.Broadcast(this, Credits, Delta);
+	}
+}
+
+bool ASPlayerState::RemoveCredits(int32 Delta)
+{
+	if (!ensure(Delta > 0.0f))
 	{
 		return false;
 	}
 
-	Credits = NewCredits;
+	if (Delta > Credits)
+	{
+		// not enough credits
+		return false;
+	}
+
+	Credits -= Delta;
 
 	if (OnCreditChanged.IsBound())
 	{
-		OnCreditChanged.Broadcast(InstigatorActor, this, Credits, Delta);
+		OnCreditChanged.Broadcast(this, Credits, -Delta);
 	}
 
 	return true;

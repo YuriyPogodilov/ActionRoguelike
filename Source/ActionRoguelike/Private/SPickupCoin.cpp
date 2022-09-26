@@ -7,7 +7,7 @@
 
 ASPickupCoin::ASPickupCoin()
 {
-	AddingCreditsAmount = 30;
+	AddingCreditsAmount = 80;
 }
 
 bool ASPickupCoin::ApplyEffect_Implementation(APawn* InstigatorPawn)
@@ -18,5 +18,7 @@ bool ASPickupCoin::ApplyEffect_Implementation(APawn* InstigatorPawn)
 		return false;
 	}
 
-	return PlayerState->ApplyCreditChange(this, AddingCreditsAmount);
+	PlayerState->AddCredits(AddingCreditsAmount);
+
+	return  true;
 }

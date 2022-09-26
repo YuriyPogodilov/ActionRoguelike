@@ -9,7 +9,7 @@
 ASHealthPotion::ASHealthPotion()
 {
 	HealthRestoreAmount = 30.0f;
-	Cost = 30.0f;
+	Cost = 30;
 }
 
 bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
@@ -25,7 +25,7 @@ bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 		return false;
 	}
 
-	if (!PlayerState->ApplyCreditChange(this, -Cost))
+	if (!PlayerState->RemoveCredits(Cost))
 	{
 		return false;
 	}

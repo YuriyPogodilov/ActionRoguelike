@@ -33,6 +33,11 @@ void ASPickableActorBase::ShowUp()
 
 void ASPickableActorBase::Interact_Implementation(APawn* InstigatorPawn)
 {
+	if (!ensure(InstigatorPawn))
+	{
+		return;
+	}
+
 	if (ApplyEffect(InstigatorPawn))
 	{
 		SetActive(false);
