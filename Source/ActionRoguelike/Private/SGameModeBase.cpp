@@ -19,7 +19,10 @@ ASGameModeBase::ASGameModeBase()
 {
 	SpawnTimerInterval = 2.0f;
 	PlayerRespawnDelay = 2.0f;
-	CreditsForBotKilling = 30;
+	CreditsForBotKilling = 10;
+
+	DesiredPowerupCount = 10;
+	RequiredPowerupDistance = 2000.0f;
 
 	PlayerStateClass = ASPlayerState::StaticClass();
 }
@@ -30,6 +33,8 @@ void ASGameModeBase::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ASGameModeBase::SpawnBotTimerElapsed, SpawnTimerInterval, true);
+
+	SpawnPowerups();
 }
 
 void ASGameModeBase::KillAll()
@@ -84,11 +89,11 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 
 	if (ensure(QueryInstance))
 	{
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnQueryCompleted);
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnBotSpawnQueryCompleted);
 	}
 }
 
-void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+void ASGameModeBase::OnBotSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
@@ -106,6 +111,80 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 16, FColor::Blue, false, 60.0f);
 	}
 }
+
+
+void ASGameModeBase::SpawnPowerups()
+{
+	if (PowerupClasses.Num() > 0)
+	{
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, PowerupSpawnQuery, this, EEnvQueryRunMode::AllMatching, nullptr);
+		if (ensure(QueryInstance))
+		{
+			QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ASGameModeBase::OnPowerupSpawnQueryCompleted);
+		}
+	}
+}
+
+
+void ASGameModeBase::OnPowerupSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawn powerups EQS Query failed!"));
+		return;
+	}
+
+	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
+
+	// Keep used locations to easily check distance between points
+	TArray<FVector> UsedLocations;
+
+	int32 SpawnCounter = 0;
+	// Break out if reached desired count or if we have no more potential positions remaining
+	while (SpawnCounter < DesiredPowerupCount && Locations.Num() > 0)
+	{
+		// Pick a random location from remaining points.
+		int32 RandomLocationIndex = FMath::RandRange(0, Locations.Num() - 1);
+
+		FVector PickedLocation = Locations[RandomLocationIndex];
+		// Remove to avoid picking again
+		Locations.RemoveAt(RandomLocationIndex);
+
+		// Check minimum distance requirement
+		bool bValidLocation = true;
+		for (FVector OtherLocation : UsedLocations)
+		{
+			float DistanceTo = (PickedLocation - OtherLocation).Size();
+
+			if (DistanceTo < RequiredPowerupDistance)
+			{
+				// Show skipped locations due to distance
+				//DrawDebugSphere(GetWorld(), PickedLocation, 50.0f, 20, FColor::Red, false, 10.0f);
+
+				// too close, skip to next attempt
+				bValidLocation = false;
+				break;
+			}
+		}
+
+		// Failed the distance test
+		if (!bValidLocation)
+		{
+			continue;
+		}
+
+		// Pick a random powerup-class
+		int32 RandomClassIndex = FMath::RandRange(0, PowerupClasses.Num() - 1);
+		TSubclassOf<AActor> RandomPowerupClass = PowerupClasses[RandomClassIndex];
+
+		GetWorld()->SpawnActor<AActor>(RandomPowerupClass, PickedLocation, FRotator::ZeroRotator);
+
+		// Keep for distance checks
+		UsedLocations.Add(PickedLocation);
+		SpawnCounter++;
+	}
+}
+
 
 void ASGameModeBase::RespawnPlayerElapsed(AController* Controller)
 {

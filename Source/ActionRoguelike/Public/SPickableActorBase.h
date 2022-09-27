@@ -16,14 +16,18 @@ class ACTIONROGUELIKE_API ASPickableActorBase : public AActor, public ISGameplay
 	GENERATED_BODY()
 	
 public:
+	
 	ASPickableActorBase();
 
 	void SetActive(bool bNewIsActive);
 
 	void ShowUp();
 
-protected:
+private:
+	
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
+protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	bool ApplyEffect(APawn* InstigatorPawn);
