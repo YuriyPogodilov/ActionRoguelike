@@ -7,6 +7,8 @@
 #include "SProjectileBase.h"
 #include "SMagicProjectile.generated.h"
 
+class USActionEffect;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASMagicProjectile : public ASProjectileBase
 {
@@ -18,8 +20,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
 
-	UPROPERTY(EditAnywhere, Category = "Tags")
+	UPROPERTY(EditAnywhere, Category = "Damage")
 	FGameplayTag ParryTag;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Damage")
+	TSubclassOf<USActionEffect> BurningActionClass; 
 	
 	virtual void Explode_Implementation() override;
 
