@@ -20,6 +20,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 	TSubclassOf<UCameraShakeBase> ImpactCameraShake;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
+	float DamageAmount;
+
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	FGameplayTag ParryTag;
 

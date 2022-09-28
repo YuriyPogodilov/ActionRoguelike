@@ -12,6 +12,7 @@
 ASMagicProjectile::ASMagicProjectile()
 {
 	ImpactCameraShake = nullptr;
+	DamageAmount = 20.0f;
 }
 
 void ASMagicProjectile::Explode_Implementation()
