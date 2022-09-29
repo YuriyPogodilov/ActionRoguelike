@@ -48,6 +48,24 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove)
 	Actions.Remove(ActionToRemove); 
 }
 
+bool USActionComponent::HasAction(TSubclassOf<USAction> ActionClass)
+{
+	if (!ensure(ActionClass))
+	{
+		return false;
+	}
+
+	for (USAction* Action : Actions)
+	{
+		if (Action->GetClass()->IsChildOf(ActionClass))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
 	for (USAction* Action : Actions)
