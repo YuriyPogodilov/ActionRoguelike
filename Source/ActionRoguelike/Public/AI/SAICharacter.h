@@ -25,6 +25,8 @@ protected:
 
 	USWorldUserWidget* ActiveHealthBar;
 
+	USWorldUserWidget* AttentionMark;
+
 	UPROPERTY(VisibleAnywhere, Category = "Effect")
 	FName TimeToHitParameterName;
 	
@@ -39,6 +41,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> AttentionMarkWidgetClass;
 
 	void SetTargetActor(AActor* NewTarget);
 

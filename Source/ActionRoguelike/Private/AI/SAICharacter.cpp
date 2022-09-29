@@ -55,7 +55,29 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget)
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
+	AActor* TargetActor = nullptr;
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC)
+	{
+		TargetActor = Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
+	}
+
+	if (TargetActor != nullptr && TargetActor == Pawn)
+	{
+		return;
+	}
+	
 	SetTargetActor(Pawn);
+
+	if (AttentionMark == nullptr && ensure(AttentionMarkWidgetClass))
+	{
+		AttentionMark = CreateWidget<USWorldUserWidget>(GetWorld(), AttentionMarkWidgetClass);
+		if (AttentionMark)
+		{
+			AttentionMark->AttachedActor = this;
+			AttentionMark->AddToViewport();
+		}
+	}
 
 	if (CVarAIDebugInfo.GetValueOnGameThread())
 	{
@@ -72,7 +94,7 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 			SetTargetActor(InstigatorActor);
 		}
 
-		if (ActiveHealthBar == nullptr)
+		if (ActiveHealthBar == nullptr && ensure(HealthBarWidgetClass))
 		{
 			ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
 			if (ActiveHealthBar)

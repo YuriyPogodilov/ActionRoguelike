@@ -57,7 +57,7 @@ bool USActionComponent::HasAction(TSubclassOf<USAction> ActionClass)
 
 	for (USAction* Action : Actions)
 	{
-		if (Action->GetClass()->IsChildOf(ActionClass))
+		if (Action->IsA(ActionClass))
 		{
 			return true;
 		}
