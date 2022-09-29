@@ -14,6 +14,8 @@ USAttributeComponent::USAttributeComponent()
 	Health = 100.0f;
 	HealthMax = 100.0;
 	bIsAlive = true;
+	Rage = 0.0f;
+	RageMax = 100.0f;
 }
 
 bool USAttributeComponent::Kill(AActor* Instigator)
@@ -65,6 +67,12 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	float ActualDelta = Health - OldHealth;
 	bIsAlive = Health > 0.0f;
 
+	// Gain rage if losing health
+	if (ActualDelta < 0.0f)
+	{
+		ApplyRageChange(InstigatorActor, -ActualDelta);
+	}
+
 	OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
 
 	// Died
@@ -76,6 +84,34 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 			GM->OnActorKilled(GetOwner(), InstigatorActor);
 		}
 	}
+
+	return true;
+}
+
+float USAttributeComponent::GetRage() const
+{
+	return Rage;
+}
+
+float USAttributeComponent::GetRageMax() const
+{
+	return RageMax;
+}
+
+bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	float OldRage = Rage;
+	float NewRage = FMath::Clamp(Rage + Delta, 0.0f, RageMax);
+
+	if (NewRage == Rage)
+	{
+		return false;
+	}
+
+	Rage = NewRage;
+	float ActualDelta = Rage - OldRage;
+
+	OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
 
 	return true;
 }
