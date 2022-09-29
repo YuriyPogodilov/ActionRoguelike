@@ -8,13 +8,22 @@
 
 bool ASPowerupAction::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
+	if (! ensure(InstigatorPawn && ActionToPickup))
+	{
+		return false;	
+	}
+	
 	if (USActionComponent* Comp = Cast<USActionComponent>(InstigatorPawn->GetComponentByClass(USActionComponent::StaticClass())))
 	{
-		if (!Comp->HasAction(ActionToPickup))
+		if (Comp->GetAction(ActionToPickup))
 		{
-			Comp->AddAction(InstigatorPawn, ActionToPickup);
-			return true;
+			FString DebugMsg = FString::Printf(TEXT("Action %s is alreadt=y known."), *GetNameSafe(ActionToPickup));
+			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, DebugMsg);
+			return false;
 		}
+
+		Comp->AddAction(InstigatorPawn, ActionToPickup);
+		return true;
 	}
 	
 	return false;

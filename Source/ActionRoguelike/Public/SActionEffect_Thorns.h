@@ -23,7 +23,7 @@ public:
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
-	float DamageReturnPercent;
+	float ReflectFraction;
 
 	UFUNCTION()
 	void ReflectDamage(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);

@@ -53,7 +53,7 @@ void ASAICharacter::SetTargetActor(AActor* NewTarget)
 	}
 }
 
-void ASAICharacter::OnPawnSeen(APawn* Pawn)
+AActor* ASAICharacter::GetTargetActor() const
 {
 	AActor* TargetActor = nullptr;
 	AAIController* AIC = Cast<AAIController>(GetController());
@@ -61,8 +61,12 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	{
 		TargetActor = Cast<AActor>(AIC->GetBlackboardComponent()->GetValueAsObject("TargetActor"));
 	}
+	return TargetActor;
+}
 
-	if (TargetActor != nullptr && TargetActor == Pawn)
+void ASAICharacter::OnPawnSeen(APawn* Pawn)
+{
+	if (GetTargetActor() == Pawn)
 	{
 		return;
 	}

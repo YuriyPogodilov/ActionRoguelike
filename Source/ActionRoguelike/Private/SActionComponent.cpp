@@ -48,22 +48,22 @@ void USActionComponent::RemoveAction(USAction* ActionToRemove)
 	Actions.Remove(ActionToRemove); 
 }
 
-bool USActionComponent::HasAction(TSubclassOf<USAction> ActionClass)
+USAction* USActionComponent::GetAction(TSubclassOf<USAction> ActionClass) const
 {
 	if (!ensure(ActionClass))
 	{
-		return false;
+		return nullptr;
 	}
 
 	for (USAction* Action : Actions)
 	{
 		if (Action->IsA(ActionClass))
 		{
-			return true;
+			return Action;
 		}
 	}
 
-	return false;
+	return nullptr;
 }
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)

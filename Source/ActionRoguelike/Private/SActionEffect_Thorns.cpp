@@ -3,6 +3,7 @@
 
 #include "SActionEffect_Thorns.h"
 
+#include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SGameplayFunctionLibrary.h"
 
@@ -12,14 +13,14 @@ USActionEffect_Thorns::USActionEffect_Thorns()
 	
 	Duration = 0.0f;
 
-	DamageReturnPercent = 10.0f;
+	ReflectFraction = 0.2f;
 }
 
 void USActionEffect_Thorns::StartAction_Implementation(AActor* Instigator)
 {
 	Super::StartAction_Implementation(Instigator);
 
-	USAttributeComponent* Comp = USAttributeComponent::GetAttributes(Instigator);
+	USAttributeComponent* Comp = USAttributeComponent::GetAttributes(GetOwningComponent()->GetOwner());
 	if (ensure(Comp))
 	{
 		Comp->OnHealthChanged.AddDynamic(this, &USActionEffect_Thorns::ReflectDamage);
@@ -30,7 +31,7 @@ void USActionEffect_Thorns::StopAction_Implementation(AActor* Instigator)
 {
 	Super::StopAction_Implementation(Instigator);
 
-	USAttributeComponent* Comp = USAttributeComponent::GetAttributes(Instigator);
+	USAttributeComponent* Comp = USAttributeComponent::GetAttributes(GetOwningComponent()->GetOwner());
 	if (ensure(Comp))
 	{
 		Comp->OnHealthChanged.RemoveDynamic(this, &USActionEffect_Thorns::ReflectDamage);
@@ -49,6 +50,6 @@ void USActionEffect_Thorns::ReflectDamage(AActor* InstigatorActor, USAttributeCo
 		return;
 	}
 
-	float ReflectedDamage = FMath::RoundToInt(FMath::Abs(Delta) * (DamageReturnPercent / 100.f));
+	float ReflectedDamage = FMath::Abs(FMath::RoundToInt(Delta * ReflectFraction));
 	USGameplayFunctionLibrary::ApplyDamage(OwningComp->GetOwner(), InstigatorActor, ReflectedDamage);
 }

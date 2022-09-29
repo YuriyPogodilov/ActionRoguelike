@@ -47,6 +47,8 @@ protected:
 
 	void SetTargetActor(AActor* NewTarget);
 
+	AActor* GetTargetActor() const;
+
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
 

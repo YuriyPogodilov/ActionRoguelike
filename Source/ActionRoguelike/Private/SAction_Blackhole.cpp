@@ -14,9 +14,14 @@ USAction_Blackhole::USAction_Blackhole()
 
 bool USAction_Blackhole::CanStart_Implementation(AActor* Instigator) const
 {
+	if (!Super::CanStart_Implementation(Instigator))
+	{
+		return false;
+	}
+	
 	USAttributeComponent* Comp = USAttributeComponent::GetAttributes(Instigator); 
 	if (Comp)
-	{
+	{ 
 		return Comp->GetRage() >= RageCost;
 	}
 		
