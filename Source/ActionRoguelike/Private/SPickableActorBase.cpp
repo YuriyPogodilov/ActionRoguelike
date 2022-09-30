@@ -12,6 +12,10 @@ ASPickableActorBase::ASPickableActorBase()
 
 	MeshBase = CreateDefaultSubobject<UStaticMeshComponent>("MeshBase");
 	MeshBase->SetupAttachment(SphereComp);
+
+	CooldownTime = 10.0f;
+	
+	SetReplicates(true);
 }
 
 void ASPickableActorBase::SetActive(bool bNewIsActive)

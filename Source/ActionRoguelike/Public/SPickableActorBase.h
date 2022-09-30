@@ -44,5 +44,5 @@ protected:
 	bool bIsActive = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float CooldownTime = 10.0f;
+	float CooldownTime;
 };
