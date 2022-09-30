@@ -42,4 +42,7 @@ protected:
 	USWorldUserWidget* DefaultWidgetInstance;
 
 	void FindBestInteractable();
+
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocus);
 };
