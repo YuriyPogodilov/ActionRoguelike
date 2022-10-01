@@ -4,6 +4,7 @@
 #include "SAttributeComponent.h"
 
 #include "SGameModeBase.h"
+#include "Net/UnrealNetwork.h"
 
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplier"), 1.0f, TEXT("Global Damage Modifier for Attribute Component."), ECVF_Cheat);
@@ -16,7 +17,10 @@ USAttributeComponent::USAttributeComponent()
 	bIsAlive = true;
 	Rage = 0.0f;
 	RageMax = 100.0f;
+
+	SetIsReplicatedByDefault(true);
 }
+
 
 bool USAttributeComponent::Kill(AActor* Instigator)
 {
@@ -73,7 +77,12 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 		ApplyRageChange(InstigatorActor, -ActualDelta);
 	}
 
-	OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
+	// OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
+
+	if (ActualDelta != 0.0f)
+	{
+		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
+	}
 
 	// Died
 	if (ActualDelta < 0.0f && Health == 0.0f)
@@ -111,7 +120,12 @@ bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	Rage = NewRage;
 	float ActualDelta = Rage - OldRage;
 
-	OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
+	// OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
+
+	if (ActualDelta != 0.0f)
+	{
+		MulticastRageChanged(InstigatorActor, Rage, ActualDelta);
+	}
 
 	return true;
 }
@@ -135,4 +149,27 @@ bool USAttributeComponent::IsActorAlive(AActor* Actor)
 	}
 
 	return false;
+}
+
+
+void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* InstigatorActor, float NewHealth, float Delta)
+{
+	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
+}
+
+
+void USAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigActor, float NewRage, float Delta)
+{
+	OnRageChanged.Broadcast(InstigActor, this, NewRage, Delta);	
+}
+
+
+void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAttributeComponent, Health);
+	DOREPLIFETIME(USAttributeComponent, HealthMax);
+	DOREPLIFETIME(USAttributeComponent, Rage);
+	DOREPLIFETIME(USAttributeComponent, RageMax);
 }
