@@ -8,6 +8,8 @@
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
+
+	SetIsReplicatedByDefault(true);
 }
 
 void USActionComponent::BeginPlay()
@@ -78,6 +80,11 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 				GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
 				continue;
 			}
+
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStartAction(Instigator, ActionName);
+			}
 			
 			Action->StartAction(Instigator);
 			return true;
@@ -110,4 +117,9 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 	FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
 	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
+}
+
+void USActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
 }
