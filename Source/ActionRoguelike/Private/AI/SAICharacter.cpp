@@ -73,6 +73,17 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 	
 	SetTargetActor(Pawn);
 
+	MulticastPawnSeen();
+
+	if (CVarAIDebugInfo.GetValueOnGameThread())
+	{
+		DrawDebugString(GetWorld(), Pawn->GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+	}
+}
+
+
+void ASAICharacter::MulticastPawnSeen_Implementation()
+{
 	if (AttentionMark == nullptr && ensure(AttentionMarkWidgetClass))
 	{
 		AttentionMark = CreateWidget<USWorldUserWidget>(GetWorld(), AttentionMarkWidgetClass);
@@ -82,12 +93,8 @@ void ASAICharacter::OnPawnSeen(APawn* Pawn)
 			AttentionMark->AddToViewport();
 		}
 	}
-
-	if (CVarAIDebugInfo.GetValueOnGameThread())
-	{
-		DrawDebugString(GetWorld(), Pawn->GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
-	}
 }
+
 
 void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)
 {
