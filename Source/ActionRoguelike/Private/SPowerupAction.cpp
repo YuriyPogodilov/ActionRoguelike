@@ -8,7 +8,12 @@
 
 bool ASPowerupAction::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
-	if (! ensure(InstigatorPawn && ActionToPickup))
+	if (!Super::ApplyEffect_Implementation(InstigatorPawn))
+	{
+		return false;
+	}
+
+	if (!ensure(InstigatorPawn && ActionToPickup))
 	{
 		return false;	
 	}

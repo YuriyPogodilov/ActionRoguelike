@@ -14,6 +14,11 @@ ASHealthPotion::ASHealthPotion()
 
 bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
+	if (!Super::ApplyEffect_Implementation(InstigatorPawn))
+	{
+		return false;
+	}
+	
 	if (!ensure(InstigatorPawn))
 	{
 		return false;

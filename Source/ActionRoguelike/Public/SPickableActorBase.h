@@ -40,8 +40,11 @@ protected:
 
 	FTimerHandle CooldownTimer;
 	
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	bool bIsActive = true;
+	UPROPERTY(ReplicatedUsing = "OnRep_IsActiveChanged", EditDefaultsOnly, BlueprintReadOnly)
+	bool bIsActive;
+
+	UFUNCTION()
+	void OnRep_IsActiveChanged();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float CooldownTime;

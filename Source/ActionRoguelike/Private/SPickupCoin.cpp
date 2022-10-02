@@ -12,6 +12,11 @@ ASPickupCoin::ASPickupCoin()
 
 bool ASPickupCoin::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
+	if (!Super::ApplyEffect_Implementation(InstigatorPawn))
+	{
+		return false;
+	}
+
 	ASPlayerState* PlayerState = InstigatorPawn->GetPlayerState<ASPlayerState>();
 	if (!PlayerState)
 	{
