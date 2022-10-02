@@ -35,6 +35,9 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Replicated)
 	int32 Credits;
+
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastCreditChanged(int32 Delta);
 };

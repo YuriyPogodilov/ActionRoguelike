@@ -3,11 +3,14 @@
 
 #include "SPlayerState.h"
 
+#include "Net/UnrealNetwork.h"
 
 
 ASPlayerState::ASPlayerState()
 {
 	Credits = 0;
+
+	SetReplicates(true);
 }
 
 
@@ -18,6 +21,11 @@ int32 ASPlayerState::GetCredits() const
 
 void ASPlayerState::AddCredits(int32 Delta)
 {
+	if (!HasAuthority())
+	{
+		return;
+	}
+	
 	if (!ensure(Delta > 0.0f))
 	{
 		return;
@@ -25,14 +33,21 @@ void ASPlayerState::AddCredits(int32 Delta)
 
 	Credits += Delta;
 
-	if (OnCreditChanged.IsBound())
-	{
-		OnCreditChanged.Broadcast(this, Credits, Delta);
-	}
+	MulticastCreditChanged(Delta);
+
+	// if (OnCreditChanged.IsBound())
+	// {
+	// 	OnCreditChanged.Broadcast(this, Credits, Delta);
+	// }
 }
 
 bool ASPlayerState::RemoveCredits(int32 Delta)
 {
+	if (!HasAuthority())
+	{
+		return false;
+	}
+
 	if (!ensure(Delta > 0.0f))
 	{
 		return false;
@@ -46,10 +61,24 @@ bool ASPlayerState::RemoveCredits(int32 Delta)
 
 	Credits -= Delta;
 
-	if (OnCreditChanged.IsBound())
-	{
-		OnCreditChanged.Broadcast(this, Credits, -Delta);
-	}
+	MulticastCreditChanged(-Delta);
+
+	// if (OnCreditChanged.IsBound())
+	// {
+	// 	OnCreditChanged.Broadcast(this, Credits, -Delta);
+	// }
 
 	return true;
+}
+
+void ASPlayerState::MulticastCreditChanged_Implementation(int32 Delta)
+{
+	OnCreditChanged.Broadcast(this, Credits, Delta);
+}
+
+void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPlayerState, Credits);
 }
