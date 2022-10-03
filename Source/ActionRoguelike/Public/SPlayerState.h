@@ -35,9 +35,13 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, Replicated)
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = "OnRep_Credits")
 	int32 Credits;
 
-	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastCreditChanged(int32 Delta);
+	// OnRep_ can use a parameter containing the 'old value' of the variable it is bound to. Very useful in this case to figure out the 'delta'.
+	UFUNCTION()
+	void OnRep_Credits(int32 OldCredits);
+
+	// UFUNCTION(NetMulticast, Unreliable)
+	// void MulticastCreditChanged(int32 Delta);
 };

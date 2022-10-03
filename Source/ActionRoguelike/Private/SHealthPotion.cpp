@@ -30,16 +30,19 @@ bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 		return false;
 	}
 
-	if (!PlayerState->RemoveCredits(Cost))
+	if (PlayerState->GetCredits() < Cost)
 	{
 		return false;
 	}
 
 	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
-
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{
-		return AttributeComp->ApplyHealthChange(this, HealthRestoreAmount);
+		if (AttributeComp->ApplyHealthChange(this, HealthRestoreAmount))
+		{
+			PlayerState->RemoveCredits(Cost);
+			return true;
+		}
 	}
 
 	return false;

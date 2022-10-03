@@ -33,12 +33,7 @@ void ASPlayerState::AddCredits(int32 Delta)
 
 	Credits += Delta;
 
-	MulticastCreditChanged(Delta);
-
-	// if (OnCreditChanged.IsBound())
-	// {
-	// 	OnCreditChanged.Broadcast(this, Credits, Delta);
-	// }
+	OnCreditChanged.Broadcast(this, Credits, Delta);
 }
 
 bool ASPlayerState::RemoveCredits(int32 Delta)
@@ -61,20 +56,20 @@ bool ASPlayerState::RemoveCredits(int32 Delta)
 
 	Credits -= Delta;
 
-	MulticastCreditChanged(-Delta);
-
-	// if (OnCreditChanged.IsBound())
-	// {
-	// 	OnCreditChanged.Broadcast(this, Credits, -Delta);
-	// }
+	OnCreditChanged.Broadcast(this, Credits, -Delta);
 
 	return true;
 }
 
-void ASPlayerState::MulticastCreditChanged_Implementation(int32 Delta)
+void ASPlayerState::OnRep_Credits(int32 OldCredits)
 {
-	OnCreditChanged.Broadcast(this, Credits, Delta);
+	OnCreditChanged.Broadcast(this, Credits, Credits - OldCredits);
 }
+
+// void ASPlayerState::MulticastCreditChanged_Implementation(int32 Delta)
+// {
+// 	OnCreditChanged.Broadcast(this, Credits, Delta);
+// }
 
 void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
