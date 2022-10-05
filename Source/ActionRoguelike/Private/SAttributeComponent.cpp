@@ -14,7 +14,6 @@ USAttributeComponent::USAttributeComponent()
 {
 	Health = 100.0f;
 	HealthMax = 100.0;
-	bIsAlive = true;
 	Rage = 0.0f;
 	RageMax = 100.0f;
 
@@ -29,7 +28,7 @@ bool USAttributeComponent::Kill(AActor* Instigator)
 
 bool USAttributeComponent::IsAlive() const
 {
-	return bIsAlive;
+	return Health > 0.0f;
 }
 
 bool USAttributeComponent::IsFullHealth() const
@@ -61,40 +60,35 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 
 	float OldHealth = Health;
 	float NewHealth = FMath::Clamp(Health + Delta, 0.0f, HealthMax);
+	float ActualDelta = NewHealth - OldHealth;
 
-	if (NewHealth == Health)
+	if (GetOwner()->HasAuthority())
 	{
-		return false;
-	}
+		Health = NewHealth;
 
-	Health = NewHealth;
-	float ActualDelta = Health - OldHealth;
-	bIsAlive = Health > 0.0f;
-
-	// Gain rage if losing health
-	if (ActualDelta < 0.0f)
-	{
-		ApplyRageChange(InstigatorActor, -ActualDelta);
-	}
-
-	// OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
-
-	if (ActualDelta != 0.0f)
-	{
-		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
-	}
-
-	// Died
-	if (ActualDelta < 0.0f && Health == 0.0f)
-	{
-		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
-		if (GM)
+		// Gain rage if losing health
+		if (ActualDelta < 0.0f)
 		{
-			GM->OnActorKilled(GetOwner(), InstigatorActor);
+			ApplyRageChange(InstigatorActor, -ActualDelta);
+		}
+
+		if (ActualDelta != 0.0f)
+		{
+			MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
+		}
+
+		// Died
+		if (ActualDelta < 0.0f && Health == 0.0f)
+		{
+			ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
+			if (GM)
+			{
+				GM->OnActorKilled(GetOwner(), InstigatorActor);
+			}
 		}
 	}
 
-	return true;
+	return ActualDelta != 0.0f;
 }
 
 float USAttributeComponent::GetRage() const
@@ -112,22 +106,19 @@ bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	float OldRage = Rage;
 	float NewRage = FMath::Clamp(Rage + Delta, 0.0f, RageMax);
 
-	if (NewRage == Rage)
+	float ActualDelta = NewRage - OldRage;
+
+	if (GetOwner()->HasAuthority())
 	{
-		return false;
+		Rage = NewRage;
+
+		if (ActualDelta != 0.0f)
+		{
+			MulticastRageChanged(InstigatorActor, Rage, ActualDelta);
+		}
 	}
 
-	Rage = NewRage;
-	float ActualDelta = Rage - OldRage;
-
-	// OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
-
-	if (ActualDelta != 0.0f)
-	{
-		MulticastRageChanged(InstigatorActor, Rage, ActualDelta);
-	}
-
-	return true;
+	return ActualDelta != 0.0f;
 }
 
 USAttributeComponent* USAttributeComponent::GetAttributes(AActor* FromActor)
