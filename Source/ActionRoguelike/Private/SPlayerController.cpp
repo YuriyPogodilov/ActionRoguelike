@@ -16,3 +16,10 @@ void ASPlayerController::OnRep_PlayerState()
 
 	OnPlayerStateChanged.Broadcast(PlayerState);
 }
+
+void ASPlayerController::SetPawn(APawn* InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	OnPawnChanged.Broadcast(InPawn);
+}
