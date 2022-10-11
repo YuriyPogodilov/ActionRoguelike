@@ -8,6 +8,7 @@
 #include "SGameModeBase.generated.h"
 
 
+class USSaveGame;
 class UEnvQuery;
 class UEnvQueryInstanceBlueprintWrapper;
 
@@ -20,6 +21,11 @@ class ACTIONROGUELIKE_API ASGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 
 protected:
+
+	FString SlotName;
+
+	UPROPERTY()
+	USSaveGame* CurrentSaveGame;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TSubclassOf<AActor> MinionClass;
@@ -72,10 +78,19 @@ public:
 
 	ASGameModeBase();
 
+	virtual void InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage) override;
+
 	virtual void StartPlay() override;
 
+	virtual void HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer) override;
+	
 	virtual void OnActorKilled(AActor* VictimActor, AActor* KillerActor);
 
 	UFUNCTION(Exec)
 	void KillAll();
+
+	UFUNCTION(BlueprintCallable, Category = "Save Game")
+	void WriteSaveGame();
+
+	void LoadSaveGame();
 };

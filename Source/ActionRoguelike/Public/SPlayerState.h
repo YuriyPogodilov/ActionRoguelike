@@ -10,7 +10,9 @@
  * 
  */
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditChanged, ASPlayerState*, PlayerState, int32, NewCredit, int32, Delta);
+class USSaveGame;
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditChanged, ASPlayerState*, PlayerState, int32, NewCredit, int32,
+                                               Delta);
 
 UCLASS()
 class ACTIONROGUELIKE_API ASPlayerState : public APlayerState
@@ -32,6 +34,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnCreditChanged OnCreditChanged;
+
+	UFUNCTION(BlueprintNativeEvent)
+	void SavePlayerState(USSaveGame* SaveObject);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void LoadPlayerState(USSaveGame* SaveObject);
 
 protected:
 
