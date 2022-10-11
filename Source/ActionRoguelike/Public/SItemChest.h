@@ -19,7 +19,7 @@ public:
 
 protected:
 
-	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", BlueprintReadOnly)
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", BlueprintReadOnly, SaveGame)
 	bool bLidOpened;
 
 	UFUNCTION()
@@ -32,5 +32,8 @@ protected:
 	UStaticMeshComponent* LidMesh;
 
 public:
+	
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
+
+	virtual void OnActorLoaded_Implementation() override;
 };
