@@ -21,8 +21,19 @@ class ACTIONROGUELIKE_API ASPlayerController : public APlayerController
 
 protected:
 
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> PauseMenuClass;
+
+	UPROPERTY()
+	UUserWidget* PauseMenuInstance;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnPawnChanged OnPawnChanged;
+
+	UFUNCTION(BlueprintCallable)
+	void TogglePauseMenu();
+
+	void SetupInputComponent() override;
 
 	// Listen for incoming player state (for clients this may be nullptr when initially joining a game, 
 	// afterwards player state will not change again as PlayerControllers maintain the same player state throughout the level)
