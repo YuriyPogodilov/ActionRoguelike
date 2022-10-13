@@ -54,8 +54,14 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Action")
+	UTexture2D* Icon;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	bool bAutoStart;
+
+	UPROPERTY(Replicated)
+	float TimeStarted;
 
 	void Initialize(USActionComponent* NewActionComp);
 
