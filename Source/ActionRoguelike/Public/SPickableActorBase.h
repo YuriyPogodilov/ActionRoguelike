@@ -23,6 +23,8 @@ public:
 
 	void ShowUp();
 
+	virtual FText GetInteractMessage_Implementation(APawn* InstigatorPawn) override;
+
 private:
 	
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;

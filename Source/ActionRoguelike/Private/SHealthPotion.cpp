@@ -6,6 +6,9 @@
 #include "SAttributeComponent.h"
 #include "SPlayerState.h"
 
+
+#define LOCTEXT_NAMESPACE "InteractableActors"
+
 ASHealthPotion::ASHealthPotion()
 {
 	HealthRestoreAmount = 30.0f;
@@ -47,3 +50,16 @@ bool ASHealthPotion::ApplyEffect_Implementation(APawn* InstigatorPawn)
 
 	return false;
 }
+
+FText ASHealthPotion::GetInteractMessage_Implementation(APawn* InstigatorPawn)
+{
+	USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(InstigatorPawn->GetComponentByClass(USAttributeComponent::StaticClass()));
+	if (AttributeComp && AttributeComp->IsFullHealth())
+	{
+		return LOCTEXT("HealthPotion_FullHealthWarning", "Already at full health.");
+	}
+
+	return FText::Format(LOCTEXT("HealthPotion_InteractMessage", "Cost {0} Credits. Restore {1} Health Points."), Cost, HealthRestoreAmount);
+}
+
+#undef LOCTEXT_NAMESPACE

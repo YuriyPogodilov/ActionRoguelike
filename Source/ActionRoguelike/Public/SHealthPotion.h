@@ -27,4 +27,8 @@ protected:
 	int32 Cost;
 
 	virtual bool ApplyEffect_Implementation(APawn* InstigatorPawn) override;
+
+public:
+
+	virtual FText GetInteractMessage_Implementation(APawn* InstigatorPawn) override;
 };

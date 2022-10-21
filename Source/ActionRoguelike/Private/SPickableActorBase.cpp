@@ -37,6 +37,11 @@ void ASPickableActorBase::ShowUp()
 	SetActive(true);
 }
 
+FText ASPickableActorBase::GetInteractMessage_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
+}
+
 void ASPickableActorBase::Interact_Implementation(APawn* InstigatorPawn)
 {
 	if (!HasAuthority())
