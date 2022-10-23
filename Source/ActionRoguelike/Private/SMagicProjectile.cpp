@@ -14,6 +14,9 @@
 ASMagicProjectile::ASMagicProjectile()
 {
 	ImpactCameraShake = nullptr;
+
+	InitialLifeSpan = 10.0f;
+	
 	DamageAmount = 20.0f;
 }
 

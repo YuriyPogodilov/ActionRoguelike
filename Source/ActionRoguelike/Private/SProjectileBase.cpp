@@ -29,7 +29,7 @@ ASProjectileBase::ASProjectileBase()
 
 	ImpactSound = nullptr;
 
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void ASProjectileBase::OnActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& HitResult)

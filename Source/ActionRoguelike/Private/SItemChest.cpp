@@ -14,7 +14,7 @@ ASItemChest::ASItemChest()
 
 	TargetPitch = 110.f;
 	
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 

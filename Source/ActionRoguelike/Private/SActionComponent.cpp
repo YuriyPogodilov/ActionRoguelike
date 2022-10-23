@@ -8,6 +8,10 @@
 #include "Engine/ActorChannel.h"
 #include "Net/UnrealNetwork.h"
 
+
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_STANFORD);
+
+
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -27,6 +31,20 @@ void USActionComponent::BeginPlay()
 			AddAction(GetOwner(), ActionClass);
 		}
 	}
+}
+
+void USActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	TArray<USAction*> ActionsCopy = Actions;
+	for (USAction* Action : ActionsCopy)
+	{
+		if (Action && Action->IsRunning())
+		{
+			Action->StopAction(GetOwner());
+		}
+	}
+	
+	Super::EndPlay(EndPlayReason);
 }
 
 void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> ActionClass)
@@ -87,6 +105,8 @@ USAction* USActionComponent::GetAction(TSubclassOf<USAction> ActionClass) const
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByName);
+	
 	for (USAction* Action : Actions)
 	{
 		if (Action && Action->ActionName == ActionName)

@@ -17,7 +17,7 @@ ASPickableActorBase::ASPickableActorBase()
 	CooldownTime = 10.0f;
 	bIsActive = true;
 	
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 void ASPickableActorBase::SetActive(bool bNewIsActive)

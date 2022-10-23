@@ -11,7 +11,7 @@ ASPlayerState::ASPlayerState()
 {
 	Credits = 0;
 
-	SetReplicates(true);
+	bReplicates = true;
 }
 
 
