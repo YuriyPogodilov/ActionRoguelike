@@ -7,6 +7,7 @@
 #include "SGameplayInterface.h"
 #include "Blueprint/UserWidget.h"
 #include "SWorldUserWidget.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 
 
 static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("su.InteractionDebugDraw"), false, TEXT("Enable Debug Lines for Interact Component."), ECVF_Cheat);
@@ -119,7 +120,7 @@ void USInteractionComponent::ServerInteract_Implementation(AActor* InFocus)
 {
 	if (!IsValid(InFocus))
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("No Focus Actor to interact."));
+		LogOnScreen(this, TEXT("No Focus Actor to interact."), FColor::Red, 1.0f);
 		return;
 	}
 	

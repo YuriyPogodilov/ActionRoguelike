@@ -5,6 +5,7 @@
 
 #include "SActionComponent.h"
 #include "SAction.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 
 bool ASPowerupAction::ApplyEffect_Implementation(APawn* InstigatorPawn)
 {
@@ -23,7 +24,7 @@ bool ASPowerupAction::ApplyEffect_Implementation(APawn* InstigatorPawn)
 		if (Comp->GetAction(ActionToPickup))
 		{
 			FString DebugMsg = FString::Printf(TEXT("Action %s is alreadt=y known."), *GetNameSafe(ActionToPickup));
-			GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, DebugMsg);
+			LogOnScreen(this, DebugMsg, FColor::Red, 2.0f);
 			return false;
 		}
 
