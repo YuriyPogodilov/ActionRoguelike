@@ -23,6 +23,7 @@
 
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning bots via timer."), ECVF_Cheat); 
+static TAutoConsoleVariable<bool> CVarGameModeDebugInfo(TEXT("su.GameModeDebugInfo"), false, TEXT("Enable GameMode Debug Information on the Screen."), ECVF_Cheat); 
 
 
 ASGameModeBase::ASGameModeBase()
@@ -156,7 +157,10 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper*
 			UAssetManager* AssetManager = UAssetManager::GetIfValid();
 			if (AssetManager)
 			{
-				LogOnScreen(this, "Loading Monster... ", FColor::Green);
+				if (CVarGameModeDebugInfo.GetValueOnGameThread())
+				{
+					LogOnScreen(this, "Loading Monster... ", FColor::Green);
+				}
 				
 				TArray<FName> Bundles;
 				FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ASGameModeBase::OnMonsterLoaded, SelectedRow->MonsterId, Locations[0]);
@@ -168,7 +172,10 @@ void ASGameModeBase::OnBotSpawnQueryCompleted(UEnvQueryInstanceBlueprintWrapper*
 
 void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId MonsterId, FVector SpawnLocation)
 {
-	LogOnScreen(this, "Finished loading.", FColor::Green);
+	if (CVarGameModeDebugInfo.GetValueOnGameThread())
+	{
+		LogOnScreen(this, "Finished loading.", FColor::Green);
+	}
 	
 	UAssetManager* AssetManager = UAssetManager::GetIfValid();
 	if (AssetManager)
@@ -179,7 +186,10 @@ void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId MonsterId, FVector SpawnLoc
 			AActor* NewBot = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, SpawnLocation, FRotator::ZeroRotator);
 			if (NewBot)
 			{
-				LogOnScreen(this, FString::Printf(TEXT("Spawn enemy: %s (%s)"), *GetNameSafe(NewBot), *GetNameSafe(MonsterData)));
+				if (CVarGameModeDebugInfo.GetValueOnGameThread())
+				{
+					LogOnScreen(this, FString::Printf(TEXT("Spawn enemy: %s (%s)"), *GetNameSafe(NewBot), *GetNameSafe(MonsterData)));
+				}
 	
 				USActionComponent* ActionComponent = Cast<USActionComponent>(NewBot->GetComponentByClass(USActionComponent::StaticClass()));
 				if (ActionComponent)

@@ -9,6 +9,9 @@
 #include "Net/UnrealNetwork.h"
 
 
+static TAutoConsoleVariable<bool> CVarActionsDebugInfo(TEXT("su.ActionsDebugInfo"), false, TEXT("Enable Actions Debug Information on the Screen."), ECVF_Cheat);
+
+
 DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_STANFORD);
 
 
@@ -159,8 +162,11 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
-	LogOnScreen(this, DebugMsg, FColor::White, 0.0f);
+	if (CVarActionsDebugInfo.GetValueOnGameThread())
+	{
+		FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
+		LogOnScreen(this, DebugMsg, FColor::White, 0.0f);
+	}
 
 	// for (USAction* Action : Actions)
 	// {
