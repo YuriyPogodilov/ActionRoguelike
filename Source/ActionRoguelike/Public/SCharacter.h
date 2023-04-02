@@ -55,6 +55,8 @@ protected:
 
 	void PrimaryAttack();
 
+	void SecondaryAttack();
+
 	void BlackHoleAttack();
 
 	void Dash();
