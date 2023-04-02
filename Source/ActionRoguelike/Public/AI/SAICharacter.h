@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
+class USAction;
 class UPawnSensingComponent;
 class USAttributeComponent;
 class USActionComponent;
@@ -57,4 +58,10 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	UFUNCTION()
+	void OnActionAdded(USActionComponent* OwningComponent, USAction* Action);
+	
+	UFUNCTION()
+	void OnActionRemoved(USActionComponent* OwningComponent, USAction* Action);
 };

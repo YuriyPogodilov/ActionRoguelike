@@ -40,6 +40,9 @@ void ASAICharacter::PostInitializeComponents()
 
 	PawnSensingComp->OnSeePawn.AddDynamic(this, &ASAICharacter::OnPawnSeen);
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ASAICharacter::OnHealthChanged);
+
+	ActionComp->OnActionStarted.AddDynamic(this, &ASAICharacter::OnActionAdded);
+	ActionComp->OnActionStopped.AddDynamic(this, &ASAICharacter::OnActionRemoved);
 }
 
 void ASAICharacter::SetTargetActor(AActor* NewTarget)
@@ -134,6 +137,32 @@ void ASAICharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponen
 
 			// set lifespan
 			SetLifeSpan(10.f);
+		}
+	}
+}
+
+void ASAICharacter::OnActionAdded(USActionComponent* OwningComponent, USAction* Action)
+{
+	static FGameplayTag FreezingTag = FGameplayTag::RequestGameplayTag("Status.Freezing");
+	if (ActionComp)
+	{
+		if (ActionComp->ActiveGameplayTags.HasTag(FreezingTag))
+		{
+			FName MaterialParam = TEXT("StatusEffectColor");
+			GetMesh()->SetVectorParameterValueOnMaterials(MaterialParam, FVector(0, 0, 1));
+		}
+	}
+}
+
+void ASAICharacter::OnActionRemoved(USActionComponent* OwningComponent, USAction* Action)
+{
+	static FGameplayTag FreezingTag = FGameplayTag::RequestGameplayTag("Status.Freezing");
+	if (ActionComp)
+	{
+		if (!ActionComp->ActiveGameplayTags.HasTag(FreezingTag))
+		{
+			FName MaterialParam = TEXT("StatusEffectColor");
+			GetMesh()->SetVectorParameterValueOnMaterials(MaterialParam, FVector(0, 0, 0));
 		}
 	}
 }
