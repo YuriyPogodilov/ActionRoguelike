@@ -25,6 +25,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	float GetTimeRemaining() const;
 
+	virtual void AddStack();
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
@@ -32,6 +34,15 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
 	float Period;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	bool bIsStackable{false};
+
+	UPROPERTY(BlueprintReadOnly, Category = "Effect")
+	int32 NumberOfStacks{0};
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	int32 MaximumStacks{1};
 
 	FTimerHandle PeriodHandle;
 	FTimerHandle DurationHandle;

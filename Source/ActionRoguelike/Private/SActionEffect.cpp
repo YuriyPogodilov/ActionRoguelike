@@ -66,6 +66,28 @@ float USActionEffect::GetTimeRemaining() const
 	return Duration;
 }
 
+void USActionEffect::AddStack()
+{
+	if (bIsStackable)
+	{
+		NumberOfStacks = FMath::Clamp(++NumberOfStacks, 1, MaximumStacks);
+	}
+
+	DurationHandle.Invalidate();
+
+	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
+	{
+		TimeStarted = GetWorld()->TimeSeconds;
+	}
+	
+	if (Duration > 0.0f)
+	{
+		FTimerDelegate Delegate;
+		Delegate.BindUFunction(this, "StopAction", RepData.InstigatorActor);
+
+		GetWorld()->GetTimerManager().SetTimer(DurationHandle, Delegate, Duration, false);
+	}
+}
 
 void USActionEffect::ExecutePeriodEffect_Implementation(AActor* Instigator)
 {

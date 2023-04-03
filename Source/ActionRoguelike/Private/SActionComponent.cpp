@@ -4,6 +4,7 @@
 #include "SActionComponent.h"
 
 #include "SAction.h"
+#include "SActionEffect.h"
 #include "ActionRoguelike/ActionRoguelike.h"
 #include "Engine/ActorChannel.h"
 #include "Net/UnrealNetwork.h"
@@ -62,6 +63,15 @@ void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> Acti
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Client attempting to AddAction. [Class: %s]"), *GetNameSafe(ActionClass));
 		return;
+	}
+
+	if (ActionClass->IsChildOf(USActionEffect::StaticClass()))
+	{
+		if (USActionEffect* Effect = Cast<USActionEffect>(GetAction(ActionClass)))
+		{
+			Effect->AddStack();
+			return;
+		}
 	}
 
 	USAction* NewAction = NewObject<USAction>(GetOwner(), ActionClass);
