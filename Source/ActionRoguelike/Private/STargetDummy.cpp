@@ -2,8 +2,12 @@
 
 
 #include "STargetDummy.h"
+
+#include "SActionComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "SAttributeComponent.h"
+#include "SWorldUserWidget.h"
+#include "Blueprint/UserWidget.h"
 
 // Sets default values
 ASTargetDummy::ASTargetDummy()
@@ -13,6 +17,23 @@ ASTargetDummy::ASTargetDummy()
 
 	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("AttribComp");
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ASTargetDummy::OnHealthChanged);
+
+	ActionComp = CreateDefaultSubobject<USActionComponent>("ActionComp");
+}
+
+void ASTargetDummy::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	if (HealthBarWidgetClass)
+	{
+		ActiveHealthBar = CreateWidget<USWorldUserWidget>(GetWorld(), HealthBarWidgetClass);
+		if (ActiveHealthBar)
+		{
+			ActiveHealthBar->AttachedActor = this;
+			ActiveHealthBar->AddToViewport();
+		}
+	}
 }
 
 void ASTargetDummy::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta)
