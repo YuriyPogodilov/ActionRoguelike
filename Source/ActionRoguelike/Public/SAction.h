@@ -17,6 +17,9 @@ struct FActionRepData
 	bool bIsRunning;
 
 	UPROPERTY()
+	float TimeStarted;
+
+	UPROPERTY()
 	AActor* InstigatorActor;
 };
 
@@ -59,9 +62,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	bool bAutoStart;
-
-	UPROPERTY(Replicated)
-	float TimeStarted;
 
 	void Initialize(USActionComponent* NewActionComp);
 

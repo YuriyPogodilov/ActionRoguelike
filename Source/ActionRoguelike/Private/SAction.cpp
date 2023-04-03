@@ -28,7 +28,7 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
 	{
-		TimeStarted = GetWorld()->TimeSeconds;
+		RepData.TimeStarted = GetWorld()->TimeSeconds;
 	}
 	
 	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(), this);

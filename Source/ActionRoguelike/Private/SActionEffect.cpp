@@ -32,6 +32,8 @@ void USActionEffect::StartAction_Implementation(AActor* Instigator)
 
 		GetWorld()->GetTimerManager().SetTimer(PeriodHandle, Delegate, Period, true);
 	}
+
+	NumberOfStacks = 1;
 }
 
 
@@ -47,6 +49,8 @@ void USActionEffect::StopAction_Implementation(AActor* Instigator)
 	GetWorld()->GetTimerManager().ClearTimer(PeriodHandle);
 	GetWorld()->GetTimerManager().ClearTimer(DurationHandle);
 
+	NumberOfStacks = 0;
+
 	USActionComponent* Comp = GetOwningComponent();
 	if (Comp)
 	{
@@ -59,7 +63,7 @@ float USActionEffect::GetTimeRemaining() const
 	AGameStateBase* GS = GetWorld()->GetGameState<AGameStateBase>();
 	if (GS)
 	{
-		float EndTime = TimeStarted + Duration;
+		float EndTime = RepData.TimeStarted + Duration;
 		return EndTime - GS->GetServerWorldTimeSeconds();
 	}
 
@@ -73,11 +77,11 @@ void USActionEffect::AddStack()
 		NumberOfStacks = FMath::Clamp(++NumberOfStacks, 1, MaximumStacks);
 	}
 
-	DurationHandle.Invalidate();
+	GetWorld()->GetTimerManager().ClearTimer(DurationHandle);
 
 	if (GetOwningComponent()->GetOwnerRole() == ROLE_Authority)
 	{
-		TimeStarted = GetWorld()->TimeSeconds;
+		RepData.TimeStarted = GetWorld()->TimeSeconds;
 	}
 	
 	if (Duration > 0.0f)
