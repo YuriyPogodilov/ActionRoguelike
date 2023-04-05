@@ -90,7 +90,7 @@ void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> Acti
 
 void USActionComponent::RemoveAction(USAction* ActionToRemove)
 {
-	if (ensure(ActionToRemove && !ActionToRemove->IsRunning()))
+	if (!ensure(ActionToRemove && !ActionToRemove->IsRunning()))
 	{
 		return;
 	}
