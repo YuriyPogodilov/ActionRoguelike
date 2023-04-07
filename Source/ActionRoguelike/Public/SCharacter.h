@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+class USAction;
 class USpringArmComponent;
 class UCameraComponent;
 class USInteractionComponent;
@@ -65,6 +66,12 @@ protected:
 
 	UFUNCTION()
 	void OnHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnActionStarted(USActionComponent* OwningComponent, USAction* Action);
+
+	UFUNCTION(BlueprintNativeEvent)
+	void OnActionStopped(USActionComponent* OwningComponent, USAction* Action);
 
 public:
 	virtual FVector GetPawnViewLocation() const override;

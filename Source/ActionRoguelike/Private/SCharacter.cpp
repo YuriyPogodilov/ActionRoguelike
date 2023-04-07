@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "DrawDebugHelpers.h"
+#include "SAction.h"
 #include "SActionComponent.h"
 #include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
@@ -43,6 +44,9 @@ void ASCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::OnHealthChanged);
+
+	ActionComp->OnActionStarted.AddDynamic(this, &ASCharacter::OnActionStarted);
+	ActionComp->OnActionStopped.AddDynamic(this, &ASCharacter::OnActionStopped);
 }
 
 // Called when the game starts or when spawned
@@ -154,6 +158,14 @@ void ASCharacter::OnHealthChanged(AActor* InstigatorActor, USAttributeComponent*
 			SetLifeSpan(5.0f);
 		}
 	}
+}
+
+void ASCharacter::OnActionStarted_Implementation(USActionComponent* OwningComponent, USAction* Action)
+{
+}
+
+void ASCharacter::OnActionStopped_Implementation(USActionComponent* OwningComponent, USAction* Action)
+{
 }
 
 FVector ASCharacter::GetPawnViewLocation() const
