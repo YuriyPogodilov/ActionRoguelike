@@ -42,8 +42,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 

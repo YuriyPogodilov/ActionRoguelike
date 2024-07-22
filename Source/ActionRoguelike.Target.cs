@@ -8,7 +8,7 @@ public class ActionRoguelikeTarget : TargetRules
 	public ActionRoguelikeTarget( TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Game;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+		DefaultBuildSettings = BuildSettingsVersion.V5;
 		ExtraModuleNames.AddRange( new string[] { "ActionRoguelike" } );
 	}
 }
